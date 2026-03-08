@@ -1,3 +1,7 @@
+import { useState, useRef, useEffect } from 'react';
+
+const MUSIC_URL = "https://raw.githubusercontent.com/Charmingdc/Relaxation-tracks/main/src/sounds/sad/emotional-piano-sad.mp3";
+
 const FloatingHeart = ({ style, delay, duration, size }: { style?: React.CSSProperties; delay: number; duration: number; size: number }) => (
   <span
     className="animate-float-up absolute text-primary pointer-events-none select-none"
@@ -17,6 +21,28 @@ const Sparkle = ({ style, delay }: { style?: React.CSSProperties; delay: number 
 );
 
 const Index = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    audioRef.current = new Audio(MUSIC_URL);
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.4;
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, []);
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
   const floatingHearts = Array.from({ length: 12 }, (_, i) => ({
     left: `${Math.random() * 100}%`,
     delay: Math.random() * 8,
@@ -33,6 +59,19 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen bg-floral-gradient overflow-hidden">
+      {/* Music toggle button */}
+      <button
+        onClick={toggleMusic}
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110"
+        style={{
+          background: 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--rose-gold)))',
+          color: 'hsl(var(--primary-foreground))',
+        }}
+        aria-label={isPlaying ? 'Tắt nhạc' : 'Bật nhạc'}
+      >
+        <span className="text-2xl">{isPlaying ? '🔊' : '🔇'}</span>
+      </button>
+
       {/* Floating hearts */}
       {floatingHearts.map((h, i) => (
         <FloatingHeart key={i} delay={h.delay} duration={h.duration} size={h.size} style={{ left: h.left }} />
