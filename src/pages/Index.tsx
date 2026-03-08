@@ -1,3 +1,7 @@
+import { useState, useRef, useEffect } from 'react';
+
+const MUSIC_URL = "https://raw.githubusercontent.com/Charmingdc/Relaxation-tracks/main/src/sounds/sad/emotional-piano-sad.mp3";
+
 const FloatingHeart = ({ style, delay, duration, size }: { style?: React.CSSProperties; delay: number; duration: number; size: number }) => (
   <span
     className="animate-float-up absolute text-primary pointer-events-none select-none"
@@ -17,6 +21,28 @@ const Sparkle = ({ style, delay }: { style?: React.CSSProperties; delay: number 
 );
 
 const Index = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    audioRef.current = new Audio(MUSIC_URL);
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.4;
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, []);
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
   const floatingHearts = Array.from({ length: 12 }, (_, i) => ({
     left: `${Math.random() * 100}%`,
     delay: Math.random() * 8,
