@@ -59,6 +59,19 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen bg-floral-gradient overflow-hidden">
+      {/* Music toggle button */}
+      <button
+        onClick={toggleMusic}
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110"
+        style={{
+          background: 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--rose-gold)))',
+          color: 'hsl(var(--primary-foreground))',
+        }}
+        aria-label={isPlaying ? 'Tắt nhạc' : 'Bật nhạc'}
+      >
+        <span className="text-2xl">{isPlaying ? '🔊' : '🔇'}</span>
+      </button>
+
       {/* Floating hearts */}
       {floatingHearts.map((h, i) => (
         <FloatingHeart key={i} delay={h.delay} duration={h.duration} size={h.size} style={{ left: h.left }} />
